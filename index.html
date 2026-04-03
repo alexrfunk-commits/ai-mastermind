@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Mastermind — Call Library</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue-900: #0A2463;
+      --blue-700: #1451B8;
+      --blue-500: #2176FF;
+      --blue-300: #72A8FF;
+      --blue-100: #E6EEFF;
+      --blue-50:  #F0F5FF;
+      --white: #FFFFFF;
+      --gray-50: #F8FAFC;
+      --gray-100: #EEF2F7;
+      --gray-300: #CBD5E1;
+      --gray-500: #64748B;
+      --gray-700: #334155;
+      --gray-900: #0F172A;
+      --gold: #F4A623;
+      --gold-light: #FFF3DC;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--gray-50);
+      color: var(--gray-900);
+      min-height: 100vh;
+    }
+
+    /* ── HEADER ─────────────────────────────── */
+    header {
+      background: linear-gradient(135deg, var(--blue-900) 0%, var(--blue-700) 60%, var(--blue-500) 100%);
+      color: white;
+      padding: 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    header::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") repeat;
+    }
+
+    .header-inner {
+      position: relative;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 56px 32px 48px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .header-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 100px;
+      padding: 4px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--blue-300);
+      width: fit-content;
+    }
+
+    .header-dot {
+      width: 6px;
+      height: 6px;
+      background: var(--gold);
+      border-radius: 50%;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.6; transform: scale(0.85); }
+    }
+
+    header h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(36px, 6vw, 64px);
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      color: white;
+    }
+
+    header h1 span {
+      color: var(--blue-300);
+    }
+
+    header p {
+      font-size: 17px;
+      color: rgba(255,255,255,0.65);
+      max-width: 480px;
+      font-weight: 300;
+      line-height: 1.6;
+    }
+
+    .header-stats {
+      display: flex;
+      gap: 32px;
+      margin-top: 8px;
+    }
+
+    .stat {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .stat-number {
+      font-family: 'Syne', sans-serif;
+      font-size: 28px;
+      font-weight: 700;
+      color: white;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: rgba(255,255,255,0.5);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    /* ── MAIN ────────────────────────────────── */
+    main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 48px 32px 80px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 28px;
+    }
+
+    .section-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--gray-900);
+    }
+
+    .call-count {
+      background: var(--blue-100);
+      color: var(--blue-700);
+      border-radius: 100px;
+      padding: 4px 14px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    /* ── EMPTY STATE ─────────────────────────── */
+    .empty-state {
+      text-align: center;
+      padding: 80px 32px;
+      border: 2px dashed var(--gray-300);
+      border-radius: 20px;
+      background: white;
+    }
+
+    .empty-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+    }
+
+    .empty-state h3 {
+      font-family: 'Syne', sans-serif;
+      font-size: 20px;
+      color: var(--gray-700);
+      margin-bottom: 8px;
+    }
+
+    .empty-state p {
+      color: var(--gray-500);
+      font-size: 15px;
+    }
+
+    /* ── CALL GRID ───────────────────────────── */
+    .call-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 20px;
+    }
+
+    /* ── CALL CARD ───────────────────────────── */
+    .call-card {
+      background: white;
+      border: 1px solid var(--gray-100);
+      border-radius: 16px;
+      padding: 28px;
+      cursor: pointer;
+      transition: all 0.22s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .call-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--blue-500), var(--blue-300));
+      border-radius: 16px 16px 0 0;
+    }
+
+    .call-card:hover {
+      border-color: var(--blue-300);
+      box-shadow: 0 8px 32px rgba(33, 118, 255, 0.12);
+      transform: translateY(-2px);
+    }
+
+    .card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .call-number {
+      background: var(--blue-50);
+      border: 1px solid var(--blue-100);
+      color: var(--blue-700);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 3px 10px;
+      border-radius: 100px;
+      white-space: nowrap;
+    }
+
+    .call-date {
+      font-size: 13px;
+      color: var(--gray-500);
+      font-weight: 400;
+    }
+
+    .card-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--gray-900);
+      line-height: 1.3;
+    }
+
+    .card-summary {
+      font-size: 14px;
+      color: var(--gray-500);
+      line-height: 1.65;
+    }
+
+    .card-takeaways {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .takeaway-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--blue-500);
+      margin-bottom: 2px;
+    }
+
+    .takeaway-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--gray-700);
+      line-height: 1.5;
+    }
+
+    .takeaway-item::before {
+      content: '→';
+      color: var(--blue-500);
+      font-size: 12px;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 12px;
+      border-top: 1px solid var(--gray-100);
+      margin-top: auto;
+    }
+
+    .view-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--blue-500);
+    }
+
+    .view-btn svg {
+      transition: transform 0.2s ease;
+    }
+
+    .call-card:hover .view-btn svg {
+      transform: translateX(3px);
+    }
+
+    .recording-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: var(--gold-light);
+      color: #92640A;
+      border-radius: 100px;
+      padding: 3px 10px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    /* ── MODAL ───────────────────────────────── */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 36, 99, 0.55);
+      backdrop-filter: blur(6px);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .modal {
+      background: white;
+      border-radius: 24px;
+      width: 100%;
+      max-width: 680px;
+      max-height: 88vh;
+      overflow-y: auto;
+      padding: 40px;
+      position: relative;
+      transform: translateY(20px) scale(0.97);
+      transition: transform 0.3s ease;
+      box-shadow: 0 32px 80px rgba(10, 36, 99, 0.25);
+    }
+
+    .modal-overlay.active .modal {
+      transform: translateY(0) scale(1);
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--gray-100);
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--gray-500);
+      font-size: 18px;
+      transition: all 0.2s;
+    }
+
+    .modal-close:hover {
+      background: var(--blue-100);
+      color: var(--blue-700);
+    }
+
+    .modal-eyebrow {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--blue-500);
+      margin-bottom: 10px;
+    }
+
+    .modal-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--gray-900);
+      line-height: 1.2;
+      margin-bottom: 6px;
+    }
+
+    .modal-date {
+      font-size: 14px;
+      color: var(--gray-500);
+      margin-bottom: 28px;
+    }
+
+    .modal-divider {
+      height: 1px;
+      background: var(--gray-100);
+      margin: 24px 0;
+    }
+
+    .modal-section-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--blue-700);
+      margin-bottom: 12px;
+    }
+
+    .modal-summary {
+      font-size: 15px;
+      color: var(--gray-700);
+      line-height: 1.75;
+    }
+
+    .modal-takeaways {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .modal-takeaway {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px 16px;
+      background: var(--blue-50);
+      border-radius: 10px;
+      font-size: 14px;
+      color: var(--gray-700);
+      line-height: 1.55;
+    }
+
+    .modal-takeaway-icon {
+      color: var(--blue-500);
+      font-size: 16px;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .recording-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: linear-gradient(135deg, var(--blue-700), var(--blue-500));
+      color: white;
+      border-radius: 12px;
+      padding: 14px 24px;
+      font-size: 15px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      margin-top: 8px;
+    }
+
+    .recording-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 24px rgba(33, 118, 255, 0.35);
+    }
+
+    .no-recording {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--gray-400);
+      font-size: 14px;
+      margin-top: 8px;
+    }
+
+    /* ── FOOTER ──────────────────────────────── */
+    footer {
+      text-align: center;
+      padding: 32px;
+      color: var(--gray-500);
+      font-size: 13px;
+      border-top: 1px solid var(--gray-100);
+    }
+
+    /* ── RESPONSIVE ──────────────────────────── */
+    @media (max-width: 640px) {
+      .header-inner { padding: 40px 20px 36px; }
+      main { padding: 32px 20px 60px; }
+      .call-grid { grid-template-columns: 1fr; }
+      .modal { padding: 28px 24px; }
+      .header-stats { gap: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-inner">
+      <div class="header-eyebrow">
+        <div class="header-dot"></div>
+        Members Only
+      </div>
+      <h1>AI <span>Mastermind</span><br>Call Library</h1>
+      <p>Every session, captured. Catch up on calls you missed or revisit the ones you didn't.</p>
+      <div class="header-stats">
+        <div class="stat">
+          <span class="stat-number" id="total-calls">0</span>
+          <span class="stat-label">Calls Recorded</span>
+        </div>
+        <div class="stat">
+          <span class="stat-number" id="latest-date">—</span>
+          <span class="stat-label">Most Recent</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="section-header">
+      <h2 class="section-title">All Sessions</h2>
+      <span class="call-count" id="call-count-badge">0 calls</span>
+    </div>
+
+    <div id="call-container"></div>
+  </main>
+
+  <footer>
+    AI Mastermind · Updated automatically after every call
+  </footer>
+
+  <!-- Modal -->
+  <div class="modal-overlay" id="modal-overlay">
+    <div class="modal" id="modal">
+      <button class="modal-close" id="modal-close">✕</button>
+      <div id="modal-content"></div>
+    </div>
+  </div>
+
+  <script>
+// ─────────────────────────────────────────────
+// MASTERMIND_CALLS_BEGIN
+const CALLS = [];
+// MASTERMIND_CALLS_END
+// ─────────────────────────────────────────────
+
+    function formatDate(dateStr) {
+      const d = new Date(dateStr);
+      return d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+    }
+
+    function renderCalls() {
+      const container = document.getElementById('call-container');
+      const totalEl = document.getElementById('total-calls');
+      const badgeEl = document.getElementById('call-count-badge');
+      const latestEl = document.getElementById('latest-date');
+
+      const sorted = [...CALLS].sort((a, b) => new Date(b.date) - new Date(a.date));
+
+      totalEl.textContent = CALLS.length;
+      badgeEl.textContent = `${CALLS.length} call${CALLS.length !== 1 ? 's' : ''}`;
+
+      if (sorted.length > 0) {
+        const d = new Date(sorted[0].date);
+        latestEl.textContent = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      }
+
+      if (CALLS.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">🎙️</div>
+            <h3>First call coming soon</h3>
+            <p>Sessions will appear here automatically after each call.</p>
+          </div>`;
+        return;
+      }
+
+      const grid = document.createElement('div');
+      grid.className = 'call-grid';
+
+      sorted.forEach((call, i) => {
+        const num = CALLS.length - i;
+        const card = document.createElement('div');
+        card.className = 'call-card';
+        card.onclick = () => openModal(call, num);
+
+        const topTakeaways = (call.takeaways || []).slice(0, 3);
+        const takeawayHTML = topTakeaways.map(t =>
+          `<div class="takeaway-item">${t}</div>`
+        ).join('');
+
+        card.innerHTML = `
+          <div class="card-top">
+            <span class="call-number">Call #${num}</span>
+            <span class="call-date">${formatDate(call.date)}</span>
+          </div>
+          <div class="card-title">${call.title}</div>
+          <div class="card-summary">${call.summary_brief}</div>
+          ${topTakeaways.length ? `
+          <div class="card-takeaways">
+            <div class="takeaway-label">Key Takeaways</div>
+            ${takeawayHTML}
+          </div>` : ''}
+          <div class="card-footer">
+            <span class="view-btn">
+              Full recap
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                <path d="M1 7h12M7 1l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+            ${call.recording_url ? `<span class="recording-badge">▶ Recording</span>` : ''}
+          </div>`;
+
+        grid.appendChild(card);
+      });
+
+      container.innerHTML = '';
+      container.appendChild(grid);
+    }
+
+    function openModal(call, num) {
+      const content = document.getElementById('modal-content');
+      const takeawayHTML = (call.takeaways || []).map(t =>
+        `<div class="modal-takeaway"><span class="modal-takeaway-icon">→</span>${t}</div>`
+      ).join('');
+
+      const recordingHTML = call.recording_url
+        ? `<a href="${call.recording_url}" target="_blank" class="recording-btn">
+             <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+             Watch Recording
+           </a>`
+        : `<div class="no-recording">
+             <span>📅</span> Recording not available for this session
+           </div>`;
+
+      content.innerHTML = `
+        <div class="modal-eyebrow">Call #${num} · AI Mastermind</div>
+        <div class="modal-title">${call.title}</div>
+        <div class="modal-date">${formatDate(call.date)}</div>
+
+        <div class="modal-section-title">Brief Summary</div>
+        <div class="modal-summary">${call.summary_brief}</div>
+
+        <div class="modal-divider"></div>
+
+        <div class="modal-section-title">Full Recap</div>
+        <div class="modal-summary">${call.summary_full}</div>
+
+        <div class="modal-divider"></div>
+
+        <div class="modal-section-title">Key Takeaways</div>
+        <div class="modal-takeaways">${takeawayHTML}</div>
+
+        <div class="modal-divider"></div>
+
+        <div class="modal-section-title">Session Recording</div>
+        ${recordingHTML}
+      `;
+
+      document.getElementById('modal-overlay').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    document.getElementById('modal-close').onclick = closeModal;
+    document.getElementById('modal-overlay').onclick = (e) => {
+      if (e.target === document.getElementById('modal-overlay')) closeModal();
+    };
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+
+    function closeModal() {
+      document.getElementById('modal-overlay').classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    renderCalls();
+  </script>
+</body>
+</html>
