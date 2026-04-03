@@ -567,7 +567,25 @@
   <script>
 // ─────────────────────────────────────────────
 // MASTERMIND_CALLS_BEGIN
-const CALLS = [];
+const CALLS = [
+  {
+    "id": "call-20260403",
+    "title": "Claude vs. Open Claw: What We're Building & Where Each Tool Fits",
+    "date": "2026-04-03",
+    "summary_brief": "The AI Mastermind crew shared what they've each built so far — from automated Airbnb deal-flow filters and custom task dashboards to AI-powered FAQ bots and Zapier-based coaching automations. The group mapped out Claude Cowork vs. Claude Code vs. Open Claw, identified when each tool shines, and committed to growing the mastermind with more AI-focused contributors.",
+    "summary_full": "The call kicked off with everyone sharing what they've been building with AI tools over the past few weeks. Alex showed his automated Airbnb deal-flow system — every time a new listing hits, Claude runs a full analysis including comps, a B&B verdict, and tier classification, then delivers the results straight to his inbox. He described it as the one build that has been genuinely saving him massive time, and said he wants more tools like it.<br><br>Marcus shared that he has been focused on speed and efficiency testing with Claude Code — measuring how quickly he can go from prompt to functional output. He has gotten website builds with payment processing and email automation down to about four minutes. He also mentioned plans to teach Claude the Cutco sales framework and to build a free alternative to VastAction for his CSPs.<br><br>Alan walked through the most builds: a custom web-based task list app synced to Google Sheets, an AI-powered FAQ chatbot for the Cutco events team that can look up customer records from a database of 62,000 entries, a Slack bot prototype, a life gamification app, and an automated coaching call recap system built through Zapier and Fireflies that analyzes transcripts, scores reps on key metrics, and sends follow-up emails on his behalf automatically.<br><br>Arman brought a different angle — he has been working with Claude Code, Cursor, Windsurf, and most recently Open Claw. His startup uses Claude for everything from hardware firmware to a patent invention system that scrapes existing patents and generates new invention concepts. He explained the difference between local LLMs and cloud-hosted providers, and shared that he is experimenting with running his own LLM on a rented server to control costs and remove token limits.<br><br>The group then debated Claude Cowork vs. Claude Code vs. Open Claw. The consensus was that Cowork is great for visual, low-friction work but has real limitations around authentication walls, CAPTCHAs, and deeper integrations. Claude Code gives more power and flexibility for anyone willing to prompt precisely, while Open Claw offers the most autonomy — spawning multiple agents, building its own tools, and running fully in the background. The call ended with the group agreeing to formalize this as a weekly AI Mastermind, invite more experts, and start building a shared call library.",
+    "takeaways": [
+      "Claude Cowork is great for visual, quick-win tasks, but Claude Code unlocks significantly more power for automations that need to interact with APIs, CRMs, and authenticated services.",
+      "Zapier is the key middleware for connecting Claude to tools it can't access natively — email sending, Fireflies transcripts, ClickUp, and calendar management all work through Zapier integrations.",
+      "You can build web apps backed by Google Sheets using Google Apps Script — creating custom dashboards and task lists that sync across phone and desktop without paying for third-party tools.",
+      "AI-powered FAQ bots can replace repetitive question-answering across teams — Alan's chatbot searches 62,000 customer records and handles common questions that used to eat his time.",
+      "Open Claw offers the most autonomy (spawning agents, building tools, running background tasks), but burns through tokens faster and requires more oversight than Claude Code.",
+      "Authentication walls (CAPTCHAs, password prompts, CRM logins) remain the biggest blocker for AI automation — workarounds include Zapier webhooks, Google Sheets as intermediaries, and Docker containers.",
+      "Start building and shipping now rather than waiting for tools to mature — the group agreed that learning the current tools puts you ahead even if better versions arrive in months."
+    ],
+    "recording_url": "https://fathom.video/share/251cC-F8ZWXHR8fF84jk8gB4NBnZ7GHH"
+  }
+];
 // MASTERMIND_CALLS_END
 // ─────────────────────────────────────────────
 
